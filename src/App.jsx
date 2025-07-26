@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Header from "./Components/Header";
 import Home from "./Pages/Home";
-import { ThemeConstant } from "./Context/Themecontext";
+import { ThemeConstant } from "./Context/ThemeContext.jsx";
 
 const App = () => {
   const [theme, setTheme] = useState("light");
