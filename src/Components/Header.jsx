@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import logo from "./../assets/Images/logo.png";
 import { HiOutlineMagnifyingGlass, HiMoon, HiSun } from "react-icons/hi2";
-import { ThemeConstant } from "../Context/Themecontext";
+import { ThemeConstant } from "../Context/ThemeContext";
 import { FiMenu } from "react-icons/fi";
 import GlobalApi from "../Services/GlobalApi";
 
