@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import logo from "./../assets/Images/logo.png";
 import { HiOutlineMagnifyingGlass, HiMoon, HiSun } from "react-icons/hi2";
 import { ThemeConstant } from "../Context/ThemeContext";
@@ -9,14 +9,18 @@ const Header = ({ onToggleGenre, onSearch }) => {
   const { theme, setTheme } = useContext(ThemeConstant);
   const [searchInput, setSearchInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const skipNextEffect = useRef(false); // ✅ Flag to skip effect
 
   useEffect(() => {
+    if (skipNextEffect.current) {
+      skipNextEffect.current = false;
+      return;
+    }
+
     if (searchInput.trim()) {
-      GlobalApi.getAllGames().then((resp) => {
-        const filtered = resp.data.results.filter((game) =>
-          game.name.toLowerCase().includes(searchInput.toLowerCase())
-        );
-        setSuggestions(filtered.slice(0, 5)); // Limit to 5
+      GlobalApi.searchGames(searchInput).then((resp) => {
+        const filtered = resp.data.results;
+        setSuggestions(filtered.slice(0, 5));
       });
     } else {
       setSuggestions([]);
@@ -27,7 +31,7 @@ const Header = ({ onToggleGenre, onSearch }) => {
   const handleSearch = (value = searchInput.trim()) => {
     if (value) {
       onSearch(value);
-      setSuggestions([]);
+      setSuggestions([]); // ✅ Close suggestions on search
     }
   };
 
@@ -77,7 +81,9 @@ const Header = ({ onToggleGenre, onSearch }) => {
                   key={game.id}
                   onClick={() => {
                     setSearchInput(game.name);
+                    skipNextEffect.current = true; // ✅ Prevent refetch
                     handleSearch(game.name);
+                    setSuggestions([]); // ✅ Close dropdown
                   }}
                   className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 cursor-pointer text-black dark:text-white"
                 >

@@ -7,11 +7,19 @@ const axiosCreate = axios.create({
 
 const getGenreList = () => axiosCreate.get("/genres?key=" + key);
 const getAllGames = () => axiosCreate.get("/games?key=" + key);
-const getGameListByGenreId = (id) =>
-  axiosCreate.get(`/games?key=${key}&genres=${id}`);
+const getGameListByGenreId = (id, page = 1, pageSize = 20) =>
+  axiosCreate.get(
+    `/games?key=${key}&genres=${id}&page=${page}&page_size=${pageSize}`
+  );
+
+const searchGames = (query) =>
+  axiosCreate.get(
+    `/games?key=${key}&search=${query}&page_size=40&search_precise=false`
+  );
 
 export default {
   getGenreList,
   getAllGames,
   getGameListByGenreId,
+  searchGames,
 };

@@ -14,6 +14,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // For general API load (search, all games)
   const [isGenreLoading, setIsGenreLoading] = useState(false); // ✅ Only for GamesByGenreId
+  const [selectedGenreId, setSelectedGenreId] = useState(4);
 
   useEffect(() => {
     getAllGamesList();
@@ -32,6 +33,8 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
     setIsLoading(true);
     GlobalApi.getAllGames().then((resp) => {
       const games = resp.data.results;
+      console.log("Games all", games);
+
       setAllGameList(games);
       const randomGame = games[Math.floor(Math.random() * games.length)];
       setRandomBannerGame(randomGame);
@@ -40,20 +43,24 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
   };
 
   const getGameListByGenreId = (id) => {
-    setIsGenreLoading(true); // ✅ Start genre-only loader
+    setSelectedGenreId(id);
+    setIsGenreLoading(true);
     GlobalApi.getGameListByGenreId(id).then((resp) => {
       setGameListByGenres(resp.data.results);
-      setIsGenreLoading(false); // ✅ End loader
+      setIsGenreLoading(false);
     });
   };
 
   const handleSearch = (query) => {
     setIsLoading(true);
-    GlobalApi.getAllGames().then((resp) => {
+    GlobalApi.searchGames(query).then((resp) => {
       const games = resp.data.results;
-      const filtered = games.filter((game) =>
-        game.name.toLowerCase().includes(query.toLowerCase())
+
+      const filtered = games.filter(
+        (game) =>
+          !/episode|demo|chapter|wavelength|dlc|prologue|trial/i.test(game.name)
       );
+
       setSearchResult(filtered);
       setIsLoading(false);
     });
@@ -101,7 +108,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
         </div>
 
         {/* Game Content */}
-        <div className="col-span-4 md:col-span-3 md:pr-4 md:pl-1">
+        <div className="col-span-4 md:col-span-3 md:pr-4 md:pl-1 pb-5">
           {randomBannerGame && <Banner gameBanner={randomBannerGame} />}
 
           {/* Search View */}
@@ -128,6 +135,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
                 <GamesByGenreId
                   gameList={gameListByGenres}
                   selectedGenresName={selectedGenresName}
+                  genreId={selectedGenreId}
                 />
               )}
             </>
