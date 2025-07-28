@@ -4,6 +4,7 @@ import GlobalApi from "../Services/GlobalApi";
 import Banner from "../Components/Banner";
 import TrendingGames from "../Components/TrendingGames";
 import GamesByGenreId from "../Components/GamesByGenreId";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
   const [allGameList, setAllGameList] = useState([]);
@@ -58,8 +59,30 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
 
       const filtered = games.filter(
         (game) =>
-          !/episode|demo|chapter|wavelength|dlc|prologue|trial/i.test(game.name)
+          !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|chapter|wavelength|dlc|prologue|trial/i.test(
+            game.name
+          )
       );
+
+      const normalizedQuery = query.trim().toLowerCase();
+
+      const sorted = filtered.sort((a, b) => {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+
+        const aExact = aName === normalizedQuery ? -1 : 0;
+        const bExact = bName === normalizedQuery ? -1 : 0;
+
+        if (aExact !== bExact) return aExact - bExact;
+
+        const aIncludes = aName.includes(normalizedQuery) ? 1 : 0;
+        const bIncludes = bName.includes(normalizedQuery) ? 1 : 0;
+
+        if (bIncludes !== aIncludes) return bIncludes - aIncludes;
+
+        // If still equal, sort by rating
+        return (b.rating || 0) - (a.rating || 0);
+      });
 
       setSearchResult(filtered);
       setIsLoading(false);
@@ -109,7 +132,19 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
 
         {/* Game Content */}
         <div className="col-span-4 md:col-span-3 md:pr-4 md:pl-1 pb-5">
-          {randomBannerGame && <Banner gameBanner={randomBannerGame} />}
+          <AnimatePresence mode="wait">
+            {!searchQuery && randomBannerGame && (
+              <motion.div
+                key="banner"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Banner gameBanner={randomBannerGame} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Search View */}
           {searchQuery ? (
@@ -121,6 +156,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
               <GamesByGenreId
                 gameList={searchResult}
                 selectedGenresName="Search"
+                enableInfiniteScroll={false}
               />
             )
           ) : (

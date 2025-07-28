@@ -14,7 +14,7 @@ const getGameListByGenreId = (id, page = 1, pageSize = 20) =>
 
 const searchGames = (query) =>
   axiosCreate.get(
-    `/games?key=${key}&search=${query}&page_size=40&search_precise=false`
+    `/games?key=${key}&search=${query}&page_size=40&search_precise=true&exclude_additions=true`
   );
 
 export default {

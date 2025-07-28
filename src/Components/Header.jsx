@@ -48,11 +48,11 @@ const Header = ({ onToggleGenre, onSearch }) => {
           <img
             src={logo}
             alt="logo"
-            className="max-w-[60px] w-full min-w-[60px] h-[60px] hidden md:block"
+            className="max-w-[60px] w-full min-w-[60px] h-[60px] block"
           />
         </a>
 
-        <div className="block md:hidden w-[60px] h-[60px] flex items-center justify-center">
+        <div className="block -order-1 md:order-0 md:hidden w-[60px] h-[60px] flex items-center justify-center">
           <FiMenu
             className="text-[30px] cursor-pointer dark:text-white text-black"
             onClick={onToggleGenre}

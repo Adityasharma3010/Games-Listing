@@ -5,6 +5,7 @@ const GamesByGenreId = ({
   selectedGenresName,
   gameList: initialGameList,
   genreId,
+  enableInfiniteScroll = true,
 }) => {
   const [gameList, setGameList] = useState(initialGameList || []);
   const [page, setPage] = useState(2); // Start from 2 since initial list is page 1
@@ -55,7 +56,7 @@ const GamesByGenreId = ({
           return (
             <div
               key={item.id}
-              ref={isLast ? lastGameRef : null}
+              ref={enableInfiniteScroll && isLast ? lastGameRef : null}
               className="bg-[#76a8f75e] p-3 rounded-lg hover:scale-110 transition-all duration-300 cursor-pointer"
             >
               <img
@@ -78,11 +79,12 @@ const GamesByGenreId = ({
         })}
       </div>
 
-      {loading && (
+      {enableInfiniteScroll && loading && (
         <div className="flex justify-center items-center mt-6">
           <div className="loader"></div>
         </div>
       )}
+
       <style>{`
   .loader {
     border: 4px solid #f3f3f3;
