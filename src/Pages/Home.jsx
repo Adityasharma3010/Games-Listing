@@ -27,6 +27,12 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
       handleSearch(searchQuery);
     } else {
       setSearchResult([]);
+
+      if (gameListByGenres.length > 0) {
+        const randomGame =
+          gameListByGenres[Math.floor(Math.random() * gameListByGenres.length)];
+        setRandomBannerGame(randomGame);
+      }
     }
   }, [searchQuery]);
 
@@ -62,7 +68,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
 
       const filtered = games.filter(
         (game) =>
-          !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|chapter|wavelength|dlc|prologue|trial/i.test(
+          !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|utilities|software|tool|chapter|wavelength|dlc|prologue|trial/i.test(
             game.name
           )
       );
@@ -164,8 +170,27 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
             )
           ) : (
             <>
-              <TrendingGames gameList={allGameList} />
+              <h2 className="mt-5 font-bold text-3xl dark:text-white">
+                Trending Games
+              </h2>
+              {isGenreLoading ? (
+                <div className="flex justify-center items-center h-32">
+                  <div className="loader"></div>
+                </div>
+              ) : (
+                <TrendingGames
+                  gameList={[...gameListByGenres]
+                    .filter((game) => game.released)
+                    .sort((a, b) => new Date(b.released) - new Date(a.released))
+                    .sort((a, b) => b.rating - a.rating)
+                    .slice(0, 4)}
+                />
+              )}
+
               {/* Genre Game List */}
+              <h2 className="font-bold text-3xl dark:text-white mt-5">
+                {selectedGenresName} Games
+              </h2>
               {isGenreLoading ? (
                 <div className="flex justify-center items-center h-40">
                   <div className="loader"></div>

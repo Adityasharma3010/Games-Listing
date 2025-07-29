@@ -111,9 +111,6 @@ const GamesByGenreId = ({
 
   return (
     <div>
-      <h2 className="font-bold text-3xl dark:text-white mt-5">
-        {selectedGenresName} Games
-      </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
         {gameList?.map((item, index) => {
           const isLast = index === gameList.length - 1;

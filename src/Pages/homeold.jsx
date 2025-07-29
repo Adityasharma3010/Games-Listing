@@ -4,6 +4,7 @@
 // import Banner from "../Components/Banner";
 // import TrendingGames from "../Components/TrendingGames";
 // import GamesByGenreId from "../Components/GamesByGenreId";
+// import { AnimatePresence, motion } from "framer-motion";
 
 // const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
 //   const [allGameList, setAllGameList] = useState([]);
@@ -14,6 +15,7 @@
 //   const [searchResult, setSearchResult] = useState([]);
 //   const [isLoading, setIsLoading] = useState(false); // For general API load (search, all games)
 //   const [isGenreLoading, setIsGenreLoading] = useState(false); // ✅ Only for GamesByGenreId
+//   const [selectedGenreId, setSelectedGenreId] = useState(4);
 
 //   useEffect(() => {
 //     getAllGamesList();
@@ -42,20 +44,49 @@
 //   };
 
 //   const getGameListByGenreId = (id) => {
-//     setIsGenreLoading(true); // ✅ Start genre-only loader
+//     setSelectedGenreId(id);
+//     setIsGenreLoading(true);
 //     GlobalApi.getGameListByGenreId(id).then((resp) => {
 //       setGameListByGenres(resp.data.results);
-//       setIsGenreLoading(false); // ✅ End loader
+//       console.log("GameListByGenres:", resp.data.results);
+
+//       setIsGenreLoading(false);
 //     });
 //   };
 
 //   const handleSearch = (query) => {
 //     setIsLoading(true);
-//     GlobalApi.getAllGames().then((resp) => {
+//     GlobalApi.searchGames(query).then((resp) => {
 //       const games = resp.data.results;
-//       const filtered = games.filter((game) =>
-//         game.name.toLowerCase().includes(query.toLowerCase())
+//       console.log("Search: ", resp.data.results);
+
+//       const filtered = games.filter(
+//         (game) =>
+//           !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|chapter|wavelength|dlc|prologue|trial/i.test(
+//             game.name
+//           )
 //       );
+
+//       const normalizedQuery = query.trim().toLowerCase();
+
+//       const sorted = filtered.sort((a, b) => {
+//         const aName = a.name.toLowerCase();
+//         const bName = b.name.toLowerCase();
+
+//         const aExact = aName === normalizedQuery ? -1 : 0;
+//         const bExact = bName === normalizedQuery ? -1 : 0;
+
+//         if (aExact !== bExact) return aExact - bExact;
+
+//         const aIncludes = aName.includes(normalizedQuery) ? 1 : 0;
+//         const bIncludes = bName.includes(normalizedQuery) ? 1 : 0;
+
+//         if (bIncludes !== aIncludes) return bIncludes - aIncludes;
+
+//         // If still equal, sort by rating
+//         return (b.rating || 0) - (a.rating || 0);
+//       });
+
 //       setSearchResult(filtered);
 //       setIsLoading(false);
 //     });
@@ -103,8 +134,20 @@
 //         </div>
 
 //         {/* Game Content */}
-//         <div className="col-span-4 md:col-span-3 md:pr-4 md:pl-1">
-//           {randomBannerGame && <Banner gameBanner={randomBannerGame} />}
+//         <div className="col-span-4 md:col-span-3 md:pr-4 md:pl-1 pb-5">
+//           <AnimatePresence mode="wait">
+//             {!searchQuery && randomBannerGame && (
+//               <motion.div
+//                 key="banner"
+//                 initial={{ opacity: 0, y: -20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 exit={{ opacity: 0, y: -20 }}
+//                 transition={{ duration: 0.4 }}
+//               >
+//                 <Banner gameBanner={randomBannerGame} />
+//               </motion.div>
+//             )}
+//           </AnimatePresence>
 
 //           {/* Search View */}
 //           {searchQuery ? (
@@ -116,6 +159,7 @@
 //               <GamesByGenreId
 //                 gameList={searchResult}
 //                 selectedGenresName="Search"
+//                 enableInfiniteScroll={false}
 //               />
 //             )
 //           ) : (
@@ -130,6 +174,7 @@
 //                 <GamesByGenreId
 //                   gameList={gameListByGenres}
 //                   selectedGenresName={selectedGenresName}
+//                   genreId={selectedGenreId}
 //                 />
 //               )}
 //             </>
