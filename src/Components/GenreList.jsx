@@ -27,10 +27,12 @@ const GenreList = ({
   };
 
   const handleGenreClick = (item, index) => {
-    setActiveIndex(index); // use lifted state
-    genresId(item.id);
-    selectedGenresName(item.name);
-    if (onCloseMobile) onCloseMobile(); // close on mobile
+    if (activeIndex != index) {
+      setActiveIndex(index); // use lifted state
+      genresId(item.id);
+      selectedGenresName(item.name);
+      if (onCloseMobile) onCloseMobile();
+    } // close on mobile
   };
 
   const renderGenreItem = (item, index) => (
