@@ -17,9 +17,12 @@ const searchGames = (query) =>
     `/games?key=${key}&search=${query}&page_size=40&search_precise=true&exclude_additions=true`
   );
 
+const getGameDetails = (id) => axiosCreate.get(`/games/${id}?key=${key}`);
+
 export default {
   getGenreList,
   getAllGames,
   getGameListByGenreId,
   searchGames,
+  getGameDetails,
 };

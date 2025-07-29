@@ -1,5 +1,58 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import GlobalApi from "../Services/GlobalApi";
+import steamIcon from "../assets/Stores/steam.svg";
+import epicIcon from "../assets/Stores/epicgames.svg";
+import gogIcon from "../assets/Stores/gogdotcom.svg";
+import playstationIcon from "../assets/Stores/playstation.svg";
+import xboxIcon from "../assets/Stores/xbox.svg";
+import xbox360Icon from "../assets/Stores/xbox360.svg";
+import nintendoIcon from "../assets/Stores/nintendo.svg";
+import appStoreIcon from "../assets/Stores/appstore.svg";
+import googlePlayStore from "../assets/Stores/googleplay.svg";
+import itchDotIo from "../assets/Stores/itchdotio.svg";
+
+const storeIcons = {
+  steam: {
+    icon: steamIcon,
+    url: "https://store.steampowered.com/",
+  },
+  "epic-games": {
+    icon: epicIcon,
+    url: "https://www.epicgames.com/store/",
+  },
+  gog: {
+    icon: gogIcon,
+    url: "https://www.gog.com/",
+  },
+  "playstation-store": {
+    icon: playstationIcon,
+    url: "https://store.playstation.com/",
+  },
+  "xbox-store": {
+    icon: xboxIcon,
+    url: "https://www.xbox.com/en-US/games/store",
+  },
+  xbox360: {
+    icon: xbox360Icon,
+    url: "https://www.xbox.com/en-US/games/store",
+  },
+  nintendo: {
+    icon: nintendoIcon,
+    url: "https://www.nintendo.com/store/",
+  },
+  "apple-appstore": {
+    icon: appStoreIcon,
+    url: "https://www.apple.com/app-store/",
+  },
+  "google-play": {
+    icon: googlePlayStore,
+    url: "https://play.google.com/",
+  },
+  itch: {
+    icon: itchDotIo,
+    url: "https://itch.io/",
+  },
+};
 
 const GamesByGenreId = ({
   selectedGenresName,
@@ -8,7 +61,7 @@ const GamesByGenreId = ({
   enableInfiniteScroll = true,
 }) => {
   const [gameList, setGameList] = useState(initialGameList || []);
-  const [page, setPage] = useState(2); // Start from 2 since initial list is page 1
+  const [page, setPage] = useState(2);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const observer = useRef();
@@ -17,6 +70,7 @@ const GamesByGenreId = ({
     setGameList(initialGameList || []);
     setPage(2);
     setHasMore(true);
+    console.log("Store", storeIcons);
   }, [initialGameList, genreId]);
 
   const lastGameRef = useCallback(
@@ -33,20 +87,30 @@ const GamesByGenreId = ({
     [loading, hasMore]
   );
 
-  const loadMoreGames = () => {
+  const loadMoreGames = async () => {
     setLoading(true);
-    GlobalApi.getGameListByGenreId(genreId, page)
-      .then((resp) => {
-        const newGames = resp.data.results;
-        setGameList((prev) => [...prev, ...newGames]);
-        setPage((prev) => prev + 1);
-        if (!resp.data.next) setHasMore(false);
-      })
-      .finally(() => setLoading(false));
+    try {
+      const resp = await GlobalApi.getGameListByGenreId(genreId, page);
+      const newGames = await Promise.all(
+        resp.data.results.map(async (game) => {
+          try {
+            const detailResp = await GlobalApi.getGameDetails(game.id);
+            return { ...game, stores: detailResp.data.stores };
+          } catch (e) {
+            return game;
+          }
+        })
+      );
+      setGameList((prev) => [...prev, ...newGames]);
+      setPage((prev) => prev + 1);
+      if (!resp.data.next) setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="">
+    <div>
       <h2 className="font-bold text-3xl dark:text-white mt-5">
         {selectedGenresName} Games
       </h2>
@@ -74,6 +138,39 @@ const GamesByGenreId = ({
                 ⭐{item.rating} 💭{item.ratings_count} 🔥
                 {item.suggestions_count}
               </h3>
+
+              {/* ✅ Store Logos */}
+              {item.stores && (
+                <div className="flex gap-2 mt-2">
+                  {item.stores.map((store) => {
+                    const slug = store.store.slug;
+                    const storeData = storeIcons[slug];
+                    const excludeDarkInvert = ["nintendo", "xbox360"].includes(
+                      slug
+                    );
+                    return (
+                      storeData && (
+                        <a
+                          key={store.store.id}
+                          href={storeData.url}
+                          target="_blank"
+                        >
+                          <img
+                            src={storeData.icon}
+                            alt={slug}
+                            title={store.store.name}
+                            className={`w-6 h-6 hover:scale-125 transition-all ${
+                              excludeDarkInvert
+                                ? ""
+                                : "dark:invert dark:brightness-105"
+                            }`}
+                          />
+                        </a>
+                      )
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })}
@@ -86,20 +183,20 @@ const GamesByGenreId = ({
       )}
 
       <style>{`
-  .loader {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    animation: spin 0.8s linear infinite;
-  }
+        .loader {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #3498db;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          animation: spin 0.8s linear infinite;
+        }
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`}</style>
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

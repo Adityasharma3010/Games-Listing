@@ -48,6 +48,8 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
     setIsGenreLoading(true);
     GlobalApi.getGameListByGenreId(id).then((resp) => {
       setGameListByGenres(resp.data.results);
+      console.log("GameListByGenres:", resp.data.results);
+
       setIsGenreLoading(false);
     });
   };
@@ -56,6 +58,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
     setIsLoading(true);
     GlobalApi.searchGames(query).then((resp) => {
       const games = resp.data.results;
+      console.log("Search: ", resp.data.results);
 
       const filtered = games.filter(
         (game) =>
