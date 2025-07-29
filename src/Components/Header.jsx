@@ -9,7 +9,21 @@ const Header = ({ onToggleGenre, onSearch }) => {
   const { theme, setTheme } = useContext(ThemeConstant);
   const [searchInput, setSearchInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const skipNextEffect = useRef(false); // ✅ Flag to skip effect
+  const skipNextEffect = useRef(false);
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSuggestions([]); // Close dropdown
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (skipNextEffect.current) {
@@ -59,7 +73,10 @@ const Header = ({ onToggleGenre, onSearch }) => {
           />
         </div>
 
-        <div className="relative flex flex-row bg-slate-200 dark:bg-slate-700 p-2 w-full items-center mx-5 rounded-full">
+        <div
+          ref={searchRef}
+          className="relative flex flex-row bg-slate-200 dark:bg-slate-700 p-2 w-full items-center mx-5 rounded-full"
+        >
           <HiOutlineMagnifyingGlass
             className="cursor-pointer"
             onClick={() => handleSearch()}
