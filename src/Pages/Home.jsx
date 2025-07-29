@@ -53,8 +53,16 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
     setSelectedGenreId(id);
     setIsGenreLoading(true);
     GlobalApi.getGameListByGenreId(id).then((resp) => {
-      setGameListByGenres(resp.data.results);
-      console.log("GameListByGenres:", resp.data.results);
+      const genreGames = resp.data.results;
+      setGameListByGenres(genreGames);
+      console.log("GameListByGenres:", genreGames);
+
+      if (!searchQuery && genreGames.length > 0) {
+        const randomGame =
+          genreGames[Math.floor(Math.random() * genreGames.length)];
+        setRandomBannerGame(randomGame);
+        console.log("Banner:", randomGame);
+      }
 
       setIsGenreLoading(false);
     });
