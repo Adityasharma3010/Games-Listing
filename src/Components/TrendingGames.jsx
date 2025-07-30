@@ -10,13 +10,13 @@ const TrendingGames = ({ gameList }) => {
           <div className="loader"></div>
         </div>
       ) : (
-        <div className="md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex flex-row lg:grid lg:grid-cols-4 gap-5 scrollbar scroll-smooth overflow-x-scroll overflow-y-hidden lg:overflow-visible max-w-5xl w-full lg:max-w-full pb-5 lg:pb-0 px-5 lg:px-0">
           {gameList.map(
             (item, index) =>
               index < 4 && (
                 <div
                   key={item.id}
-                  className="bg-[#76a8f75e] rounded-lg group hover:scale-110 transition-all duration-300 ease-in-out cursor-pointer mt-5"
+                  className="bg-[#76a8f75e] rounded-lg group hover:scale-110 transition-all min-w-[220px] lg:min-w-1 duration-300 ease-in-out cursor-pointer mt-5"
                 >
                   <img
                     src={item.background_image}

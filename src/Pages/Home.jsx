@@ -152,7 +152,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
           <AnimatePresence mode="wait">
             {!searchQuery && randomBannerGame && (
               <motion.div
-                key="banner"
+                key={randomBannerGame.id}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}

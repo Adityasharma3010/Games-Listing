@@ -118,56 +118,61 @@ const GamesByGenreId = ({
             <div
               key={item.id}
               ref={enableInfiniteScroll && isLast ? lastGameRef : null}
-              className="bg-[#76a8f75e] p-3 rounded-lg hover:scale-110 transition-all duration-300 cursor-pointer"
+              className="bg-[#76a8f75e] p-3 gap-1 flex flex-col rounded-lg hover:scale-110 transition-all duration-300 cursor-pointer"
             >
               <img
                 src={item.background_image}
                 alt={item.name}
                 className="w-full h-[250px] sm:h-[300px] md:h-[170px] rounded-xl object-cover"
               />
-              <h3 className="text-xl dark:text-white font-bold">
-                {item.name}
-                <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium">
-                  {item.metacritic}
-                </span>
-              </h3>
-              <h3 className="text-gray-500 dark:text-gray-300">
-                ⭐{item.rating} 💭{item.ratings_count} 🔥
-                {item.suggestions_count}
-              </h3>
+              <div className="grow flex flex-col justify-between">
+                <h3 className="text-xl dark:text-white font-bold">
+                  {item.name}
+                  <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium relative -top-[3px]">
+                    {item.metacritic}
+                  </span>
+                </h3>
+                <div className="flex flex-col">
+                  <h3 className="text-gray-500 dark:text-gray-300">
+                    ⭐{item.rating} 💭{item.ratings_count} 🔥
+                    {item.suggestions_count}
+                  </h3>
 
-              {/* ✅ Store Logos */}
-              {item.stores && (
-                <div className="flex gap-2 mt-2">
-                  {item.stores.map((store) => {
-                    const slug = store.store.slug;
-                    const storeData = storeIcons[slug];
-                    const excludeDarkInvert = ["nintendo", "xbox360"].includes(
-                      slug
-                    );
-                    return (
-                      storeData && (
-                        <a
-                          key={store.store.id}
-                          href={storeData.url}
-                          target="_blank"
-                        >
-                          <img
-                            src={storeData.icon}
-                            alt={slug}
-                            title={store.store.name}
-                            className={`w-6 h-6 hover:scale-125 transition-all ${
-                              excludeDarkInvert
-                                ? ""
-                                : "dark:invert dark:brightness-105"
-                            }`}
-                          />
-                        </a>
-                      )
-                    );
-                  })}
+                  {/* ✅ Store Logos */}
+                  {item.stores && (
+                    <div className="flex gap-2 mt-2">
+                      {item.stores.map((store) => {
+                        const slug = store.store.slug;
+                        const storeData = storeIcons[slug];
+                        const excludeDarkInvert = [
+                          "nintendo",
+                          "xbox360",
+                        ].includes(slug);
+                        return (
+                          storeData && (
+                            <a
+                              key={store.store.id}
+                              href={storeData.url}
+                              target="_blank"
+                            >
+                              <img
+                                src={storeData.icon}
+                                alt={slug}
+                                title={store.store.name}
+                                className={`w-6 h-6 hover:scale-125 transition-all ${
+                                  excludeDarkInvert
+                                    ? ""
+                                    : "dark:invert dark:brightness-105"
+                                }`}
+                              />
+                            </a>
+                          )
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
