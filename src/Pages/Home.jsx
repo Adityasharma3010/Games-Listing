@@ -5,6 +5,8 @@ import Banner from "../Components/Banner";
 import TrendingGames from "../Components/TrendingGames";
 import GamesByGenreId from "../Components/GamesByGenreId";
 import { AnimatePresence, motion } from "framer-motion";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { useRef } from "react";
 
 const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
   const [allGameList, setAllGameList] = useState([]);
@@ -16,6 +18,8 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
   const [isLoading, setIsLoading] = useState(false); // For general API load (search, all games)
   const [isGenreLoading, setIsGenreLoading] = useState(false); // ✅ Only for GamesByGenreId
   const [selectedGenreId, setSelectedGenreId] = useState(4);
+  const [isAtBeginning, setIsAtBeginning] = useState(true);
+  const [isAtEnd, setIsAtEnd] = useState(false);
 
   useEffect(() => {
     getAllGamesList();
@@ -106,6 +110,19 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
     });
   };
 
+  const swiperRef = useRef(null);
+
+  const scrollTrending = (dir) => {
+    if (swiperRef.current && swiperRef.current.slideNext) {
+      if (dir === "left") swiperRef.current.slidePrev();
+      else swiperRef.current.slideNext();
+    }
+  };
+
+  useEffect(() => {
+    console.log("Swiper ref is:", swiperRef.current);
+  }, [swiperRef.current]);
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -178,9 +195,28 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
             )
           ) : (
             <>
-              <h2 className="mt-5 font-bold text-3xl dark:text-white">
-                Trending Games
-              </h2>
+              <div className="mt-5 flex items-center justify-between">
+                <h2 className="font-bold text-3xl dark:text-white">
+                  Trending Games
+                </h2>
+
+                {/* Mobile Swiper Navigation */}
+                <div className="flex gap-3 lg:hidden">
+                  <button
+                    onClick={() => scrollTrending("left")}
+                    className="bg-[#76a8f75e] hover:bg-[#76a8f7ad] text-black dark:text-white p-2 rounded-full shadow"
+                  >
+                    <HiChevronLeft size={20} />
+                  </button>
+                  <button
+                    onClick={() => scrollTrending("right")}
+                    className="bg-[#76a8f75e] hover:bg-[#76a8f7ad] text-black dark:text-white p-2 rounded-full shadow"
+                  >
+                    <HiChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
+
               {isGenreLoading ? (
                 <div className="flex justify-center items-center h-32">
                   <div className="loader"></div>
@@ -192,6 +228,9 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
                     .sort((a, b) => new Date(b.released) - new Date(a.released))
                     .sort((a, b) => b.rating - a.rating)
                     .slice(0, 4)}
+                  swiperRef={swiperRef}
+                  setIsAtBeginning={setIsAtBeginning}
+                  setIsAtEnd={setIsAtEnd}
                 />
               )}
 

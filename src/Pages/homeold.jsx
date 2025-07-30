@@ -5,6 +5,7 @@
 // import TrendingGames from "../Components/TrendingGames";
 // import GamesByGenreId from "../Components/GamesByGenreId";
 // import { AnimatePresence, motion } from "framer-motion";
+// import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 // const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
 //   const [allGameList, setAllGameList] = useState([]);
@@ -13,13 +14,13 @@
 //   const [activeGenreIndex, setActiveGenreIndex] = useState(0);
 //   const [randomBannerGame, setRandomBannerGame] = useState(null);
 //   const [searchResult, setSearchResult] = useState([]);
-//   const [isLoading, setIsLoading] = useState(false); // For general API load (search, all games)
-//   const [isGenreLoading, setIsGenreLoading] = useState(false); // ✅ Only for GamesByGenreId
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [isGenreLoading, setIsGenreLoading] = useState(false);
 //   const [selectedGenreId, setSelectedGenreId] = useState(4);
 
 //   useEffect(() => {
 //     getAllGamesList();
-//     getGameListByGenreId(4); // default Action
+//     getGameListByGenreId(4);
 //   }, []);
 
 //   useEffect(() => {
@@ -27,6 +28,12 @@
 //       handleSearch(searchQuery);
 //     } else {
 //       setSearchResult([]);
+
+//       if (gameListByGenres.length > 0) {
+//         const randomGame =
+//           gameListByGenres[Math.floor(Math.random() * gameListByGenres.length)];
+//         setRandomBannerGame(randomGame);
+//       }
 //     }
 //   }, [searchQuery]);
 
@@ -47,8 +54,16 @@
 //     setSelectedGenreId(id);
 //     setIsGenreLoading(true);
 //     GlobalApi.getGameListByGenreId(id).then((resp) => {
-//       setGameListByGenres(resp.data.results);
-//       console.log("GameListByGenres:", resp.data.results);
+//       const genreGames = resp.data.results;
+//       setGameListByGenres(genreGames);
+//       console.log("GameListByGenres:", genreGames);
+
+//       if (!searchQuery && genreGames.length > 0) {
+//         const randomGame =
+//           genreGames[Math.floor(Math.random() * genreGames.length)];
+//         setRandomBannerGame(randomGame);
+//         console.log("Banner:", randomGame);
+//       }
 
 //       setIsGenreLoading(false);
 //     });
@@ -62,7 +77,7 @@
 
 //       const filtered = games.filter(
 //         (game) =>
-//           !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|chapter|wavelength|dlc|prologue|trial/i.test(
+//           !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|utilities|software|tool|chapter|wavelength|dlc|prologue|trial/i.test(
 //             game.name
 //           )
 //       );
@@ -138,7 +153,7 @@
 //           <AnimatePresence mode="wait">
 //             {!searchQuery && randomBannerGame && (
 //               <motion.div
-//                 key="banner"
+//                 key={randomBannerGame.id}
 //                 initial={{ opacity: 0, y: -20 }}
 //                 animate={{ opacity: 1, y: 0 }}
 //                 exit={{ opacity: 0, y: -20 }}
@@ -164,8 +179,27 @@
 //             )
 //           ) : (
 //             <>
-//               <TrendingGames gameList={allGameList} />
+//               <h2 className="mt-5 font-bold text-3xl dark:text-white">
+//                 Trending Games
+//               </h2>
+//               {isGenreLoading ? (
+//                 <div className="flex justify-center items-center h-32">
+//                   <div className="loader"></div>
+//                 </div>
+//               ) : (
+//                 <TrendingGames
+//                   gameList={[...gameListByGenres]
+//                     .filter((game) => game.released)
+//                     .sort((a, b) => new Date(b.released) - new Date(a.released))
+//                     .sort((a, b) => b.rating - a.rating)
+//                     .slice(0, 4)}
+//                 />
+//               )}
+
 //               {/* Genre Game List */}
+//               <h2 className="font-bold text-3xl dark:text-white mt-5">
+//                 {selectedGenresName} Games
+//               </h2>
 //               {isGenreLoading ? (
 //                 <div className="flex justify-center items-center h-40">
 //                   <div className="loader"></div>
