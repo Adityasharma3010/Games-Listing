@@ -4,9 +4,11 @@ import Home from "./Pages/Home";
 import { ThemeConstant } from "./Context/ThemeContext";
 
 const App = () => {
-  const [theme, setTheme] = useState("light");
   const [showMobileGenre, setShowMobileGenre] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  });
 
   return (
     <ThemeConstant.Provider value={{ theme, setTheme }}>
