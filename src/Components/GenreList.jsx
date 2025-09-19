@@ -1,38 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import GlobalApi from "../Services/GlobalApi";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const ALL_GAMES_ID = "all";
 
 const GenreList = ({
-  genresId,
-  selectedGenresName,
+  setGenreId,
+  setGenreName,
   isMobileOpen,
   onCloseMobile,
   activeIndex,
   setActiveIndex,
-  setIsGenreLoading, // ✅ loader setter
+  setIsGenreLoading,
 }) => {
-  const [genreList, setGenreList] = useState([]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => {
-    getGenreList();
-  }, []);
+  // Use React Query for genres
+  const { data: genreList = [], isLoading } = useQuery({
+    queryKey: ["genres"],
+    queryFn: () => GlobalApi.getGenreList().then((resp) => resp.data.results),
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
-  const getGenreList = () => {
-    GlobalApi.getGenreList()
-      .then((resp) => {
-        setGenreList(resp.data.results);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch genre list:", err);
-      });
+  // Add "All Games" at the top
+  const allGamesItem = {
+    id: ALL_GAMES_ID,
+    name: "All Games",
+    image_background:
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80", // or any default image
   };
 
+  const genresWithAll = [allGamesItem, ...genreList];
+
   const handleGenreClick = (item, index) => {
-    if (activeIndex != index) {
-      setActiveIndex(index); // use lifted state
-      genresId(item.id);
-      selectedGenresName(item.name);
+    if (activeIndex !== index) {
+      setActiveIndex(index);
+      setGenreId(item.id); // Correct: updates selectedGenreId in Home
+      setGenreName(item.name); // Correct: updates selectedGenresName in Home
       if (onCloseMobile) onCloseMobile();
-    } // close on mobile
+
+      if (location.pathname !== "/") {
+        navigate("/", {
+          state: {
+            selectedGenreId: item.id,
+            selectedGenresName: item.name,
+            activeGenreIndex: index,
+          },
+        });
+      }
+    }
   };
 
   const renderGenreItem = (item, index) => (
@@ -69,19 +87,40 @@ const GenreList = ({
           : ""
       }`}
     >
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex items-center justify-between mb-4">
         <h2 className="text-[30px] font-bold dark:text-white">Genre</h2>
         {isMobileOpen && (
           <button
             onClick={onCloseMobile}
-            className="text-xl bg-slate-300 dark:bg-slate-700 px-3 py-1 rounded dark:text-white"
+            className="px-3 py-1 text-xl rounded bg-slate-300 dark:bg-slate-700 dark:text-white"
           >
             ✕
           </button>
         )}
       </div>
 
-      {genreList.map((item, index) => renderGenreItem(item, index))}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-20">
+          <div className="loader"></div>
+        </div>
+      ) : (
+        genresWithAll.map((item, index) => renderGenreItem(item, index))
+      )}
+
+      <style>{`
+        .loader {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #3498db;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

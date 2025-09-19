@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./Components/Header";
 import Home from "./Pages/Home";
+import Game from "./Pages/Game";
+import MainLayout from "./Components/MainLayout";
 import { ThemeConstant } from "./Context/ThemeContext";
 
 const App = () => {
@@ -14,15 +17,34 @@ const App = () => {
     <ThemeConstant.Provider value={{ theme, setTheme }}>
       <div className={theme === "dark" ? "dark" : ""}>
         <div className="bg-white dark:bg-[#121212] min-h-screen">
-          <Header
-            onToggleGenre={() => setShowMobileGenre(!showMobileGenre)}
-            onSearch={(query) => setSearchQuery(query)}
-          />
-          <Home
-            showMobileGenre={showMobileGenre}
-            setShowMobileGenre={setShowMobileGenre}
-            searchQuery={searchQuery}
-          />
+          <BrowserRouter>
+            <Header
+              onToggleGenre={() => setShowMobileGenre(!showMobileGenre)}
+              onSearch={(query) => setSearchQuery(query)}
+            />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <MainLayout>
+                    <Home
+                      showMobileGenre={showMobileGenre}
+                      setShowMobileGenre={setShowMobileGenre}
+                      searchQuery={searchQuery}
+                    />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/game/:id"
+                element={
+                  <MainLayout>
+                    <Game />
+                  </MainLayout>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
         </div>
       </div>
     </ThemeConstant.Provider>

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
+import { Link } from "react-router-dom";
 import GlobalApi from "../Services/GlobalApi";
 import steamIcon from "../assets/Stores/steam.svg";
 import epicIcon from "../assets/Stores/epicgames.svg";
@@ -111,11 +112,12 @@ const GamesByGenreId = ({
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+      <div className="grid grid-cols-1 gap-6 mt-5 md:grid-cols-2 lg:grid-cols-3">
         {gameList?.map((item, index) => {
           const isLast = index === gameList.length - 1;
           return (
-            <div
+            <Link
+              to={`/game/${item.id}`}
               key={item.id}
               ref={enableInfiniteScroll && isLast ? lastGameRef : null}
               className="bg-[#76a8f75e] p-3 gap-1 flex flex-col rounded-lg hover:scale-110 transition-all duration-300 cursor-pointer"
@@ -125,8 +127,8 @@ const GamesByGenreId = ({
                 alt={item.name}
                 className="w-full h-[250px] sm:h-[300px] md:h-[170px] rounded-xl object-cover"
               />
-              <div className="grow flex flex-col justify-between">
-                <h3 className="text-xl dark:text-white font-bold">
+              <div className="flex flex-col justify-between grow">
+                <h3 className="text-xl font-bold dark:text-white">
                   {item.name}
                   <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium relative -top-[3px]">
                     {item.metacritic}
@@ -173,13 +175,13 @@ const GamesByGenreId = ({
                   )}
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
 
       {enableInfiniteScroll && loading && (
-        <div className="flex justify-center items-center mt-6">
+        <div className="flex items-center justify-center mt-6">
           <div className="loader"></div>
         </div>
       )}
