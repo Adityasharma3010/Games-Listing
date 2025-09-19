@@ -129,7 +129,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
       {showMobileGenre && (
         <>
           <div
-            className="fixed inset-0 bg-black opacity-55 z-40 md:hidden"
+            className="fixed inset-0 z-40 bg-black opacity-55 md:hidden"
             onClick={() => setShowMobileGenre(false)}
           ></div>
           <div
@@ -155,7 +155,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
       {/* Main Layout */}
       <div className="grid grid-cols-4 px-4 md:px-0">
         {/* Genre List */}
-        <div className="h-full hidden md:block px-4">
+        <div className="hidden h-full px-4 md:block">
           <GenreList
             genresId={(id) => getGameListByGenreId(id)}
             selectedGenresName={(name) => setSelectedGenresName(name)}
@@ -165,7 +165,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
         </div>
 
         {/* Game Content */}
-        <div className="col-span-4 md:col-span-3 md:pr-4 md:pl-1 pb-5">
+        <div className="col-span-4 pb-5 md:col-span-3 md:pr-4 md:pl-1">
           <AnimatePresence mode="wait">
             {!searchQuery && randomBannerGame && (
               <motion.div
@@ -183,7 +183,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
           {/* Search View */}
           {searchQuery ? (
             isLoading ? (
-              <div className="flex justify-center items-center h-40">
+              <div className="flex items-center justify-center h-40">
                 <div className="loader"></div>
               </div>
             ) : (
@@ -195,8 +195,8 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
             )
           ) : (
             <>
-              <div className="mt-5 flex items-center justify-between">
-                <h2 className="font-bold text-3xl dark:text-white">
+              <div className="flex items-center justify-between mt-5">
+                <h2 className="text-3xl font-bold dark:text-white">
                   Trending Games
                 </h2>
 
@@ -218,7 +218,7 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
               </div>
 
               {isGenreLoading ? (
-                <div className="flex justify-center items-center h-32">
+                <div className="flex items-center justify-center h-32">
                   <div className="loader"></div>
                 </div>
               ) : (
@@ -235,11 +235,11 @@ const Home = ({ showMobileGenre, setShowMobileGenre, searchQuery }) => {
               )}
 
               {/* Genre Game List */}
-              <h2 className="font-bold text-3xl dark:text-white mt-5">
+              <h2 className="mt-5 text-3xl font-bold dark:text-white">
                 {selectedGenresName} Games
               </h2>
               {isGenreLoading ? (
-                <div className="flex justify-center items-center h-40">
+                <div className="flex items-center justify-center h-40">
                   <div className="loader"></div>
                 </div>
               ) : (
