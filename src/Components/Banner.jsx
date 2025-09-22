@@ -10,7 +10,7 @@ const Banner = ({ gameBanner }) => {
           <h2 className="text-2xl font-bold audiowide text-white">
             {gameBanner.name}
           </h2>
-          <button className="px-2 py-1 mt-2 text-white bg-blue-700 rounded-lg cursor-pointer">
+          <button className="px-2 py-1 mt-2 text-white text-sm press bg-blue-700 rounded-lg cursor-pointer">
             Read Now
           </button>
         </div>
