@@ -118,7 +118,7 @@ const GamesByGenreId = ({
               <img
                 src={item.background_image}
                 alt={item.name}
-                className="w-full h-[250px] sm:h-[300px] md:h-[170px] rounded-xl object-cover"
+                className="w-full h-[250px] sm:h-[300px] md:h-[170px] rounded-xl object-cover object-top"
               />
               <div className="flex flex-col justify-between grow">
                 <h3 className="text-base font-bold audiowide  dark:text-white">

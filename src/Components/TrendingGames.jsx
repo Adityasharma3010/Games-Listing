@@ -29,7 +29,7 @@ const TrendingGames = ({
           <img
             src={item.background_image}
             alt={item.name}
-            className="h-[270px] rounded-t-lg object-cover w-full"
+            className="h-[270px] rounded-t-lg object-cover object-top w-full"
           />
           <h2 className="p-2 text-lg font-bold orbitron truncate dark:text-white">
             {item.name}
