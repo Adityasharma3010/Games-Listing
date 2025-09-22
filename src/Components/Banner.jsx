@@ -7,7 +7,9 @@ const Banner = ({ gameBanner }) => {
     <Link to={`/game/${gameBanner.id}`}>
       <div className="relative cursor-pointer">
         <div className="absolute bottom-0 w-full p-5 bg-gradient-to-t from-slate-900 to-transparent rounded-b-xl">
-          <h2 className="text-2xl font-bold text-white">{gameBanner.name}</h2>
+          <h2 className="text-2xl font-bold audiowide text-white">
+            {gameBanner.name}
+          </h2>
           <button className="px-2 py-1 mt-2 text-white bg-blue-700 rounded-lg cursor-pointer">
             Read Now
           </button>

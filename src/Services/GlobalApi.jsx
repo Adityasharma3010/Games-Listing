@@ -6,7 +6,11 @@ const axiosCreate = axios.create({
 });
 
 const getGenreList = () => axiosCreate.get("/genres?key=" + key);
-const getAllGames = () => axiosCreate.get("/games?key=" + key);
+
+// Accept page & pageSize
+const getAllGames = (page = 1, pageSize = 20) =>
+  axiosCreate.get(`/games?key=${key}&page=${page}&page_size=${pageSize}`);
+
 const getGameListByGenreId = (id, page = 1, pageSize = 20) =>
   axiosCreate.get(
     `/games?key=${key}&genres=${id}&page=${page}&page_size=${pageSize}`

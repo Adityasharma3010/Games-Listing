@@ -5,10 +5,10 @@ import TrendingGames from "../Components/TrendingGames";
 import GamesByGenreId from "../Components/GamesByGenreId";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
-import { useQuery } from "@tanstack/react-query";
 
 const Home = ({
   searchQuery,
+  setSearchQuery, // ✅ new prop
   selectedGenreId,
   selectedGenresName,
   setSelectedGenreId,
@@ -17,87 +17,76 @@ const Home = ({
   const [randomBannerGame, setRandomBannerGame] = useState(null);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAtBeginning, setIsAtBeginning] = useState(true);
-  const [isAtEnd, setIsAtEnd] = useState(false);
+  const [allGameList, setAllGameList] = useState([]);
+  const [isAllGamesLoading, setIsAllGamesLoading] = useState(false);
+  const [gameListByGenres, setGameListByGenres] = useState([]);
+  const [isGenreLoading, setIsGenreLoading] = useState(false);
+  const [genreList, setGenreList] = useState([]);
 
-  // Fetch all games
-  const { data: allGameList = [], isLoading: isAllGamesLoading } = useQuery({
-    queryKey: ["allGames"],
-    queryFn: () => GlobalApi.getAllGames().then((res) => res.data.results),
-    staleTime: 1000 * 60 * 5,
-  });
+  const swiperRef = useRef(null);
 
-  // Fetch games by genre
-  const { data: gameListByGenres = [], isLoading: isGenreLoading } = useQuery({
-    queryKey: ["gamesByGenre", selectedGenreId],
-    queryFn: () =>
-      GlobalApi.getGameListByGenreId(selectedGenreId).then(
-        (res) => res.data.results
-      ),
-    enabled: !!selectedGenreId && selectedGenreId !== "all",
-    staleTime: 1000 * 60 * 5,
-  });
+  useEffect(() => {
+    if (!selectedGenreId) {
+      setSelectedGenreId("all");
+      setSelectedGenresName("All Games");
+    }
+  }, []);
 
   // Fetch genres
-  const { data: genreList = [] } = useQuery({
-    queryKey: ["genres"],
-    queryFn: () => GlobalApi.getGenreList().then((resp) => resp.data.results),
-    staleTime: 1000 * 60 * 60,
-  });
-
-  // Group all games by genre for "All Games" view, always 4 cards (pad with nulls)
-  const gamesByGenre = {};
-  if (allGameList && genreList) {
-    genreList.forEach((genre) => {
-      let genreGames = allGameList.filter((game) =>
-        game.genres.some((g) => g.id === genre.id)
-      );
-      if (genreGames.length < 4) {
-        genreGames = [
-          ...genreGames,
-          ...Array(4 - genreGames.length).fill(null),
-        ];
-      } else {
-        genreGames = genreGames.slice(0, 4);
-      }
-      gamesByGenre[genre.name] = genreGames;
-    });
-  }
-
-  // Banner logic: from selected genre, or from all games if "All Games" is selected
   useEffect(() => {
-    if (searchQuery) return; // Don't change banner on search
+    GlobalApi.getGenreList().then((res) =>
+      setGenreList(res.data.results || [])
+    );
+  }, []);
+
+  // Fetch first page of all games
+  useEffect(() => {
+    if (selectedGenreId === "all" && allGameList.length === 0) {
+      setIsAllGamesLoading(true);
+      GlobalApi.getAllGames(1).then((res) => {
+        setAllGameList(res.data.results || []);
+        setIsAllGamesLoading(false);
+      });
+    }
+  }, [selectedGenreId]);
+
+  // Fetch genre-specific games
+  useEffect(() => {
+    if (selectedGenreId && selectedGenreId !== "all") {
+      setIsGenreLoading(true);
+      GlobalApi.getGameListByGenreId(selectedGenreId).then((res) => {
+        setGameListByGenres(res.data.results || []);
+        setIsGenreLoading(false);
+      });
+    }
+  }, [selectedGenreId]);
+
+  // Banner logic
+  useEffect(() => {
+    if (searchQuery) return;
 
     if (selectedGenreId === "all" && allGameList.length > 0) {
-      const randomGame =
-        allGameList[Math.floor(Math.random() * allGameList.length)];
-      setRandomBannerGame(randomGame);
+      setRandomBannerGame(
+        allGameList[Math.floor(Math.random() * allGameList.length)]
+      );
     } else if (
       selectedGenreId !== "all" &&
       gameListByGenres &&
       gameListByGenres.length > 0
     ) {
-      const randomGame =
-        gameListByGenres[Math.floor(Math.random() * gameListByGenres.length)];
-      setRandomBannerGame(randomGame);
+      setRandomBannerGame(
+        gameListByGenres[Math.floor(Math.random() * gameListByGenres.length)]
+      );
     }
   }, [selectedGenreId, allGameList, gameListByGenres, searchQuery]);
 
-  useEffect(() => {
-    if (searchQuery) {
-      handleSearch(searchQuery);
-    } else {
-      setSearchResult([]);
-    }
-  }, [searchQuery]);
-
+  // Handle search
   const handleSearch = (query) => {
     setIsLoading(true);
     GlobalApi.searchGames(query).then((resp) => {
-      const games = resp.data.results;
-      const filtered = games.filter(
+      const filtered = resp.data.results.filter(
         (game) =>
-          !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|demo|utilities|software|tool|chapter|wavelength|dlc|prologue|trial/i.test(
+          !/wallpaper|fan.?made|mod|soundtrack|demo|pack|episode|utilities|software|tool|chapter|dlc|prologue|trial/i.test(
             game.name
           )
       );
@@ -106,8 +95,10 @@ const Home = ({
     });
   };
 
-  const swiperRef = useRef(null);
-  const trendingRefs = useRef([]);
+  useEffect(() => {
+    if (searchQuery) handleSearch(searchQuery);
+    else setSearchResult([]);
+  }, [searchQuery]);
 
   const scrollTrending = (dir) => {
     if (swiperRef.current && swiperRef.current.slideNext) {
@@ -118,7 +109,7 @@ const Home = ({
 
   return (
     <>
-      {/* Banner always at the top */}
+      {/* Banner */}
       <AnimatePresence mode="wait">
         {!searchQuery && randomBannerGame && (
           <motion.div
@@ -133,7 +124,6 @@ const Home = ({
         )}
       </AnimatePresence>
 
-      {/* Game Content */}
       <div className="pb-5">
         {/* Search View */}
         {searchQuery ? (
@@ -146,37 +136,31 @@ const Home = ({
               gameList={searchResult}
               selectedGenresName="Search"
               enableInfiniteScroll={false}
+              genreId="search"
+              setSearchQuery={setSearchQuery} // ✅ pass it down
             />
           )
         ) : selectedGenreId === "all" ? (
-          // All Games view: NO trending, just genre sections
           <div className="mt-8">
-            {genreList.map((genre, idx) => {
-              const games = gamesByGenre[genre.name] || [];
-              return (
-                <div key={genre.id} className="mb-8">
-                  <h2 className="mb-2 text-2xl font-bold dark:text-white">
-                    {genre.name}
-                  </h2>
-
-                  <TrendingGames
-                    gameList={games}
-                    swiperRef={(el) => (trendingRefs.current[idx] = el)}
-                    setIsAtBeginning={() => {}}
-                    setIsAtEnd={() => {}}
-                  />
-                </div>
-              );
-            })}
+            <h2
+              style={{ fontFamily: "Press Start 2P, cursive" }}
+              className="mb-2 text-2xl font-bold press dark:text-white"
+            >
+              All Games
+            </h2>
+            <GamesByGenreId
+              gameList={allGameList}
+              selectedGenresName="All"
+              enableInfiniteScroll={true}
+              genreId="all"
+            />
           </div>
         ) : (
-          // Normal genre view: show trending and genre games
           <>
             <div className="flex items-center justify-between mt-5">
-              <h2 className="text-3xl font-bold dark:text-white">
+              <h2 className="text-xl sm:text-[22px] md:text-3xl font-bold press dark:text-white">
                 Trending Games
               </h2>
-              {/* Mobile Swiper Navigation */}
               <div className="flex gap-3 lg:hidden">
                 <button
                   onClick={() => scrollTrending("left")}
@@ -205,13 +189,12 @@ const Home = ({
                   .sort((a, b) => b.rating - a.rating)
                   .slice(0, 4)}
                 swiperRef={swiperRef}
-                setIsAtBeginning={setIsAtBeginning}
-                setIsAtEnd={setIsAtEnd}
+                setIsAtBeginning={() => {}}
+                setIsAtEnd={() => {}}
               />
             )}
 
-            {/* Genre Game List */}
-            <h2 className="mt-5 text-3xl font-bold dark:text-white">
+            <h2 className="mt-5 text-xl sm:text-[22px] md:text-3xl font-bold press dark:text-white">
               {selectedGenresName} Games
             </h2>
             {isGenreLoading ? (
@@ -223,13 +206,13 @@ const Home = ({
                 gameList={gameListByGenres}
                 selectedGenresName={selectedGenresName}
                 genreId={selectedGenreId}
+                enableInfiniteScroll={true}
               />
             )}
           </>
         )}
       </div>
 
-      {/* Spinner Style */}
       <style>{`
         .loader {
           border: 4px solid #f3f3f3;

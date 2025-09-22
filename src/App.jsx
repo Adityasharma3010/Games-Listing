@@ -31,6 +31,7 @@ const App = () => {
                       showMobileGenre={showMobileGenre}
                       setShowMobileGenre={setShowMobileGenre}
                       searchQuery={searchQuery}
+                      setSearchQuery={setSearchQuery} // ✅ pass setSearchQuery
                     />
                   </MainLayout>
                 }
@@ -39,7 +40,12 @@ const App = () => {
                 path="/game/:id"
                 element={
                   <MainLayout>
-                    <Game />
+                    <Game
+                      showMobileGenre={showMobileGenre}
+                      setShowMobileGenre={setShowMobileGenre}
+                      searchQuery={searchQuery}
+                      setSearchQuery={setSearchQuery} // ✅ pass setSearchQuery
+                    />
                   </MainLayout>
                 }
               />

@@ -1,9 +1,25 @@
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Monoton&family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap");
 
+@import "tailwindcss";
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
-
 @custom-variant dark (&:where(.dark, .dark *));
+
+.press {
+  font-family: "Press Start 2P", cursive;
+}
+
+.audiowide {
+  font-family: "Audiowide", sans-serif;
+}
+
+.monoton {
+  font-family: "Monoton", cursive;
+}
+
+.orbitron {
+  font-family: "Orbitron", sans-serif;
+}
 
 .scrollbar {
   scrollbar-width: thin;
@@ -21,6 +37,22 @@
 
 .scrollbar::-webkit-scrollbar-track {
   background: transparent;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
 }
 
 @theme inline {

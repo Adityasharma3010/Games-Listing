@@ -70,7 +70,7 @@ const GenreList = ({
         }`}
       />
       <h3
-        className={`dark:text-white text-lg group-hover:font-bold transition-all ease-in duration-300 ${
+        className={`dark:text-white text-lg orbitron truncate group-hover:font-bold transition-all ease-in duration-300 ${
           activeIndex === index ? "font-bold" : ""
         }`}
       >

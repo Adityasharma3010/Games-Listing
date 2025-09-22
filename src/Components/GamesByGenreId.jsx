@@ -13,18 +13,9 @@ import googlePlayStore from "../assets/Stores/googleplay.svg";
 import itchDotIo from "../assets/Stores/itchdotio.svg";
 
 const storeIcons = {
-  steam: {
-    icon: steamIcon,
-    url: "https://store.steampowered.com/",
-  },
-  "epic-games": {
-    icon: epicIcon,
-    url: "https://www.epicgames.com/store/",
-  },
-  gog: {
-    icon: gogIcon,
-    url: "https://www.gog.com/",
-  },
+  steam: { icon: steamIcon, url: "https://store.steampowered.com/" },
+  "epic-games": { icon: epicIcon, url: "https://www.epicgames.com/store/" },
+  gog: { icon: gogIcon, url: "https://www.gog.com/" },
   "playstation-store": {
     icon: playstationIcon,
     url: "https://store.playstation.com/",
@@ -33,26 +24,14 @@ const storeIcons = {
     icon: xboxIcon,
     url: "https://www.xbox.com/en-US/games/store",
   },
-  xbox360: {
-    icon: xbox360Icon,
-    url: "https://www.xbox.com/en-US/games/store",
-  },
-  nintendo: {
-    icon: nintendoIcon,
-    url: "https://www.nintendo.com/store/",
-  },
+  xbox360: { icon: xbox360Icon, url: "https://www.xbox.com/en-US/games/store" },
+  nintendo: { icon: nintendoIcon, url: "https://www.nintendo.com/store/" },
   "apple-appstore": {
     icon: appStoreIcon,
     url: "https://www.apple.com/app-store/",
   },
-  "google-play": {
-    icon: googlePlayStore,
-    url: "https://play.google.com/",
-  },
-  itch: {
-    icon: itchDotIo,
-    url: "https://itch.io/",
-  },
+  "google-play": { icon: googlePlayStore, url: "https://play.google.com/" },
+  itch: { icon: itchDotIo, url: "https://itch.io/" },
 };
 
 const GamesByGenreId = ({
@@ -60,6 +39,7 @@ const GamesByGenreId = ({
   gameList: initialGameList,
   genreId,
   enableInfiniteScroll = true,
+  setSearchQuery, // ✅ new prop
 }) => {
   const [gameList, setGameList] = useState(initialGameList || []);
   const [page, setPage] = useState(2);
@@ -71,7 +51,6 @@ const GamesByGenreId = ({
     setGameList(initialGameList || []);
     setPage(2);
     setHasMore(true);
-    console.log("Store", storeIcons);
   }, [initialGameList, genreId]);
 
   const lastGameRef = useCallback(
@@ -91,7 +70,13 @@ const GamesByGenreId = ({
   const loadMoreGames = async () => {
     setLoading(true);
     try {
-      const resp = await GlobalApi.getGameListByGenreId(genreId, page);
+      let resp;
+      if (genreId === "all") {
+        resp = await GlobalApi.getAllGames(page);
+      } else {
+        resp = await GlobalApi.getGameListByGenreId(genreId, page);
+      }
+
       const newGames = await Promise.all(
         resp.data.results.map(async (game) => {
           try {
@@ -102,8 +87,10 @@ const GamesByGenreId = ({
           }
         })
       );
+
       setGameList((prev) => [...prev, ...newGames]);
       setPage((prev) => prev + 1);
+
       if (!resp.data.next) setHasMore(false);
     } finally {
       setLoading(false);
@@ -121,6 +108,12 @@ const GamesByGenreId = ({
               key={item.id}
               ref={enableInfiniteScroll && isLast ? lastGameRef : null}
               className="bg-[#76a8f75e] p-3 gap-1 flex flex-col rounded-lg hover:scale-110 transition-all duration-300 cursor-pointer"
+              onClick={() => {
+                // clear search if this is from search results
+                if (genreId === "search" && setSearchQuery) {
+                  setSearchQuery("");
+                }
+              }}
             >
               <img
                 src={item.background_image}
@@ -128,19 +121,17 @@ const GamesByGenreId = ({
                 className="w-full h-[250px] sm:h-[300px] md:h-[170px] rounded-xl object-cover"
               />
               <div className="flex flex-col justify-between grow">
-                <h3 className="text-xl font-bold dark:text-white">
+                <h3 className="text-base font-bold audiowide  dark:text-white">
                   {item.name}
                   <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium relative -top-[3px]">
                     {item.metacritic}
                   </span>
                 </h3>
                 <div className="flex flex-col">
-                  <h3 className="text-gray-500 dark:text-gray-300">
+                  <h3 className="text-gray-500 audiowide dark:text-gray-300">
                     ⭐{item.rating} 💭{item.ratings_count} 🔥
                     {item.suggestions_count}
                   </h3>
-
-                  {/* ✅ Store Logos */}
                   {item.stores && (
                     <div className="flex gap-2 mt-2">
                       {item.stores.map((store) => {
@@ -152,7 +143,7 @@ const GamesByGenreId = ({
                         ].includes(slug);
                         return (
                           storeData && (
-                            <a
+                            <span
                               key={store.store.id}
                               href={storeData.url}
                               target="_blank"
@@ -167,7 +158,7 @@ const GamesByGenreId = ({
                                     : "dark:invert dark:brightness-105"
                                 }`}
                               />
-                            </a>
+                            </span>
                           )
                         );
                       })}
@@ -195,7 +186,6 @@ const GamesByGenreId = ({
           height: 36px;
           animation: spin 0.8s linear infinite;
         }
-
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }

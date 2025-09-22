@@ -75,10 +75,10 @@ const Header = ({ onToggleGenre, onSearch }) => {
 
         <div
           ref={searchRef}
-          className="relative flex flex-row bg-slate-200 dark:bg-slate-700 p-2 w-full items-center mx-5 rounded-full"
+          className="relative flex flex-row items-center w-full p-2 mx-5 rounded-full bg-slate-200 dark:bg-slate-700"
         >
           <HiOutlineMagnifyingGlass
-            className="cursor-pointer"
+            className="cursor-pointer dark:stroke-white"
             onClick={() => handleSearch()}
           />
           <input
@@ -87,12 +87,12 @@ const Header = ({ onToggleGenre, onSearch }) => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="bg-transparent outline-none px-2 w-full text-black dark:text-white"
+            className="w-full px-2 text-black bg-transparent outline-none dark:text-white"
           />
 
           {/* Suggestions Dropdown */}
           {suggestions.length > 0 && (
-            <div className="absolute top-full mt-1 left-0 w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+            <div className="absolute left-0 z-50 w-full mt-1 overflow-y-auto bg-white rounded-lg shadow-lg top-full dark:bg-gray-800 max-h-60">
               {suggestions.map((game) => (
                 <div
                   key={game.id}
@@ -102,7 +102,7 @@ const Header = ({ onToggleGenre, onSearch }) => {
                     handleSearch(game.name);
                     setSuggestions([]); // ✅ Close dropdown
                   }}
-                  className="px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 cursor-pointer text-black dark:text-white"
+                  className="px-4 py-2 text-black cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600 dark:text-white"
                 >
                   {game.name}
                 </div>

@@ -31,7 +31,7 @@ const TrendingGames = ({
             alt={item.name}
             className="h-[270px] rounded-t-lg object-cover w-full"
           />
-          <h2 className="p-2 text-xl font-bold truncate dark:text-white">
+          <h2 className="p-2 text-lg font-bold orbitron truncate dark:text-white">
             {item.name}
           </h2>
         </div>
