@@ -87,7 +87,7 @@ const Header = ({ onToggleGenre, onSearch }) => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full px-2 text-black bg-transparent outline-none dark:text-white"
+            className="w-full px-2 audiowide text-black bg-transparent outline-none dark:text-white"
           />
 
           {/* Suggestions Dropdown */}
@@ -102,7 +102,7 @@ const Header = ({ onToggleGenre, onSearch }) => {
                     handleSearch(game.name);
                     setSuggestions([]); // ✅ Close dropdown
                   }}
-                  className="px-4 py-2 text-black cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600 dark:text-white"
+                  className="px-4 py-2 audiowide text-black cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600 dark:text-white"
                 >
                   {game.name}
                 </div>

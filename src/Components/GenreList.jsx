@@ -88,7 +88,9 @@ const GenreList = ({
       }`}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[30px] font-bold dark:text-white">Genre</h2>
+        <h2 className="text-xl sm:text-[22px] md:text-3xl font-bold press dark:text-white">
+          Genre
+        </h2>
         {isMobileOpen && (
           <button
             onClick={onCloseMobile}

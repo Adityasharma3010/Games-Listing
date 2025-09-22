@@ -121,17 +121,19 @@ const GamesByGenreId = ({
                 className="w-full h-[250px] sm:h-[300px] md:h-[170px] rounded-xl object-cover object-top"
               />
               <div className="flex flex-col justify-between grow">
-                <h3 className="text-base font-bold audiowide  dark:text-white">
-                  {item.name}
-                  <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium relative -top-[3px]">
-                    {item.metacritic}
-                  </span>
-                </h3>
-                <div className="flex flex-col">
+                <div className="flex flex-col grow">
+                  <h3 className="text-base font-bold audiowide  dark:text-white">
+                    {item.name}
+                    <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium relative -top-[3px]">
+                      {item.metacritic}
+                    </span>
+                  </h3>
                   <h3 className="text-gray-500 audiowide dark:text-gray-300">
                     ⭐{item.rating} 💭{item.ratings_count} 🔥
                     {item.suggestions_count}
                   </h3>
+                </div>
+                <div className="flex flex-col">
                   {item.stores && (
                     <div className="flex gap-2 mt-2">
                       {item.stores.map((store) => {

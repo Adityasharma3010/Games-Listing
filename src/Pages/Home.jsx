@@ -142,10 +142,7 @@ const Home = ({
           )
         ) : selectedGenreId === "all" ? (
           <div className="mt-8">
-            <h2
-              style={{ fontFamily: "Press Start 2P, cursive" }}
-              className="mb-2 text-2xl font-bold press dark:text-white"
-            >
+            <h2 className="mb-2 text-xl sm:text-[22px] md:text-3xl font-bold press dark:text-white">
               All Games
             </h2>
             <GamesByGenreId
