@@ -260,10 +260,15 @@ const Game = ({ searchQuery, setSearchQuery }) => {
                   if (!acceptedTerms) {
                     e.preventDefault();
                     alert("You must accept the terms and conditions first.");
+                  } else if (!/Android|iPhone/i.test(navigator.userAgent)) {
+                    e.preventDefault();
+                    alert(
+                      "UPI payments only work on mobile devices with UPI apps installed."
+                    );
                   }
                 }}
                 className="px-4 py-2 font-bold text-white rounded bg-green-500 hover:bg-green-600
-                           hover:drop-shadow-[0_0_8px_rgba(0,255,128,0.8)]"
+             hover:drop-shadow-[0_0_8px_rgba(0,255,128,0.8)]"
               >
                 Pay with UPI
               </a>
