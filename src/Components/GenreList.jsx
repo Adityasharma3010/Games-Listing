@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import GlobalApi from "../Services/GlobalApi";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ const GenreList = ({
   activeIndex,
   setActiveIndex,
   setIsGenreLoading,
+  searchQuery, // 🔹 new prop
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,16 +30,35 @@ const GenreList = ({
     id: ALL_GAMES_ID,
     name: "All Games",
     image_background:
-      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80", // or any default image
+      "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=400&q=80",
   };
 
   const genresWithAll = [allGamesItem, ...genreList];
 
+  // 🔹 Ensure correct active genre based on route & search
+  useEffect(() => {
+    if (location.pathname === "/" && !searchQuery) {
+      // Home with no search → All Games active
+      setActiveIndex(0);
+      setGenreId(ALL_GAMES_ID);
+      setGenreName("All Games");
+    } else {
+      // Game page OR search active → clear selection
+      setActiveIndex(null);
+    }
+  }, [
+    location.pathname,
+    searchQuery,
+    setActiveIndex,
+    setGenreId,
+    setGenreName,
+  ]);
+
   const handleGenreClick = (item, index) => {
     if (activeIndex !== index) {
       setActiveIndex(index);
-      setGenreId(item.id); // Correct: updates selectedGenreId in Home
-      setGenreName(item.name); // Correct: updates selectedGenresName in Home
+      setGenreId(item.id);
+      setGenreName(item.name);
       if (onCloseMobile) onCloseMobile();
 
       if (location.pathname !== "/") {
@@ -108,21 +128,6 @@ const GenreList = ({
       ) : (
         genresWithAll.map((item, index) => renderGenreItem(item, index))
       )}
-
-      <style>{`
-        .loader {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #3498db;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

@@ -122,7 +122,7 @@ const GamesByGenreId = ({
               />
               <div className="flex flex-col justify-between grow">
                 <div className="flex flex-col grow">
-                  <h3 className="text-base font-bold audiowide  dark:text-white">
+                  <h3 className="text-base font-bold audiowide dark:text-white">
                     {item.name}
                     <span className="p-1 rounded-sm ml-2 text-[10px] bg-green-100 text-green-700 font-medium relative -top-[3px]">
                       {item.metacritic}
@@ -178,21 +178,6 @@ const GamesByGenreId = ({
           <div className="loader"></div>
         </div>
       )}
-
-      <style>{`
-        .loader {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #3498db;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

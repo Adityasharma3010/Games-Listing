@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Monoton&family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Monoton&family=Orbitron:wght@400..900&family=Press+Start+2P&family=Share+Tech+Mono&display=swap");
 
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
@@ -21,6 +21,14 @@
   font-family: "Orbitron", sans-serif;
 }
 
+.share-tech-mono {
+  font-family: "Share Tech Mono", monospace;
+}
+
+.exo {
+  font-family: "Exo 2", sans-serif;
+}
+
 .scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #76a8f75e transparent;
@@ -39,6 +47,23 @@
   background: transparent;
 }
 
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
@@ -53,6 +78,156 @@
 
 .animate-gradient {
   animation: gradient 3s ease infinite;
+}
+
+/* Keyframes for moving gradient */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animate the gradient on the border wrapper */
+.animate-gradient {
+  background-size: 300% 300%;
+  animation: gradient 4s linear infinite;
+}
+
+@keyframes glitch {
+  0% {
+    clip-path: inset(0% 0 0% 0);
+    transform: translate(0);
+  }
+  10% {
+    clip-path: inset(10% 0 85% 0);
+    transform: translate(-2px, -2px);
+  }
+  20% {
+    clip-path: inset(85% 0 5% 0);
+    transform: translate(2px, 2px);
+  }
+  30% {
+    clip-path: inset(5% 0 90% 0);
+    transform: translate(-1px, 1px);
+  }
+  40% {
+    clip-path: inset(90% 0 0% 0);
+    transform: translate(1px, -1px);
+  }
+  50% {
+    clip-path: inset(0% 0 0% 0);
+    transform: translate(0);
+  }
+  100% {
+    clip-path: inset(0% 0 0% 0);
+    transform: translate(0);
+  }
+}
+
+.glitch-hover:hover {
+  animation: glitch 0.5s infinite;
+}
+
+@keyframes neon-shadow {
+  0% {
+    filter: drop-shadow(0 0 3px rgba(128, 0, 255, 0.4))
+      drop-shadow(0 0 6px rgba(0, 128, 255, 0.4))
+      drop-shadow(0 0 8px rgba(255, 0, 128, 0.4));
+  }
+  25% {
+    filter: drop-shadow(-1px 0 4px rgba(128, 0, 255, 0.4))
+      drop-shadow(1px -1px 6px rgba(0, 128, 255, 0.4))
+      drop-shadow(-1px 1px 10px rgba(255, 0, 128, 0.4));
+  }
+  50% {
+    filter: drop-shadow(1px -1px 5px rgba(128, 0, 255, 0.4))
+      drop-shadow(-2px 0 7px rgba(0, 128, 255, 0.4))
+      drop-shadow(1px -1px 12px rgba(255, 0, 128, 0.4));
+  }
+  75% {
+    filter: drop-shadow(-1px 1px 4px rgba(128, 0, 255, 0.4))
+      drop-shadow(2px -1px 6px rgba(0, 128, 255, 0.4))
+      drop-shadow(-1px 1px 10px rgba(255, 0, 128, 0.4));
+  }
+  100% {
+    filter: drop-shadow(0 0 3px rgba(128, 0, 255, 0.4))
+      drop-shadow(0 0 6px rgba(0, 128, 255, 0.4))
+      drop-shadow(0 0 8px rgba(255, 0, 128, 0.4));
+  }
+}
+
+@keyframes neon-shadow-dark {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(255, 0, 255, 0.5))
+      drop-shadow(0 0 4px rgba(0, 255, 255, 0.5))
+      drop-shadow(0 0 6px rgba(255, 20, 147, 0.5));
+  }
+  50% {
+    filter: drop-shadow(-1px 0 3px rgba(255, 0, 255, 0.5))
+      drop-shadow(1px -1px 5px rgba(0, 255, 255, 0.5))
+      drop-shadow(-1px 1px 8px rgba(255, 20, 147, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px rgba(255, 0, 255, 0.5))
+      drop-shadow(0 0 4px rgba(0, 255, 255, 0.5))
+      drop-shadow(0 0 6px rgba(255, 20, 147, 0.5));
+  }
+}
+
+.animate-neon {
+  animation: neon-shadow 3s infinite alternate;
+}
+
+.dark .animate-neon {
+  animation: neon-shadow-dark 3s infinite alternate;
+}
+
+@keyframes neon-glow {
+  0%,
+  100% {
+    text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+  }
+  50% {
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  22%,
+  24%,
+  55% {
+    opacity: 0.4;
+  }
+}
+
+.animate-neon {
+  animation: neon-glow 1.5s infinite alternate;
+}
+
+.flicker {
+  animation: flicker 2s infinite;
+}
+
+.animate-neon-glow {
+  box-shadow: 0 0 8px #ff00ff, 0 0 16px #ff00ff, 0 0 24px #ff00ff;
+  animation: neon-glow 1.5s infinite alternate;
 }
 
 @theme inline {

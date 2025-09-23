@@ -31,7 +31,7 @@ const TrendingGames = ({
             alt={item.name}
             className="h-[270px] rounded-t-lg object-cover object-top w-full"
           />
-          <h2 className="p-2 text-lg font-bold orbitron truncate dark:text-white">
+          <h2 className="p-2 text-lg font-bold truncate orbitron dark:text-white">
             {item.name}
           </h2>
         </div>
@@ -85,22 +85,6 @@ const TrendingGames = ({
           </div>
         </>
       )}
-
-      <style>{`
-        .loader {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #3498db;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

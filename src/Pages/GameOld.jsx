@@ -10,8 +10,6 @@ const Game = ({ searchQuery, setSearchQuery }) => {
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
   const [isMd, setIsMd] = useState(window.innerWidth >= 768);
-  const [showBuyNowModal, setShowBuyNowModal] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   // Track window resize for responsive tag count
   useEffect(() => {
@@ -87,7 +85,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
   return (
     <div className="pb-5 mx-auto space-y-6 md:px-4 lg:px-8">
       {/* Game Title */}
-      <h1 className="mb-4 text-3xl font-bold monoton bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 dark:from-cyan-400 dark:via-fuchsia-500 dark:to-purple-600 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-cy animate-neon flicker">
+      <h1 className="mb-4 text-3xl font-bold monoton bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 dark:from-cyan-400 dark:via-fuchsia-500 dark:to-purple-600 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-cy">
         {game.name}
       </h1>
 
@@ -95,7 +93,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
       {game.background_image && (
         <div
           className="relative w-full rounded-lg p-1 bg-gradient-to-r from-purple-800 via-blue-500 to-pink-600
-                  bg-[length:300%_300%] animate-gradient animate-neon-glow
+                  bg-[length:300%_300%] animate-gradient animate-neon
                   dark:from-purple-700 dark:via-fuchsia-500 dark:to-cyan-400 dark:bg-[length:400%_400%]"
         >
           <img
@@ -200,75 +198,6 @@ const Game = ({ searchQuery, setSearchQuery }) => {
               </a>
             );
           })}
-        </div>
-      )}
-
-      {/* Buy Now Button */}
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => setShowBuyNowModal(true)}
-          className="px-6 py-3 text-lg font-bold text-white transition bg-pink-500 rounded-lg hover:bg-pink-600 
-               hover:drop-shadow-[0_0_10px_rgba(255,0,255,0.7)] dark:hover:drop-shadow-[0_0_10px_rgba(255,20,147,0.8)]"
-        >
-          Buy Now
-        </button>
-      </div>
-
-      {/* Buy Now Modal */}
-      {showBuyNowModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative w-11/12 max-w-md p-6 bg-gray-900 border-2 border-pink-500 rounded-lg animate-neon-glow">
-            <h2 className="mb-4 text-2xl font-bold text-pink-500 flicker">
-              Confirm Purchase
-            </h2>
-            <p className="mb-4 text-sm text-gray-300 cursor-pointer group">
-              {/* Original text */}
-              <span className="inline group-hover:hidden">
-                You are about to buy <strong>{game.name}</strong> for{" "}
-                <strong>₹70</strong>.
-              </span>
-              {/* Hover text */}
-              <span className="hidden group-hover:inline">
-                You will not get any game key!
-              </span>
-            </p>
-
-            {/* Terms Checkbox */}
-            <label className="flex items-center gap-2 mb-4 text-gray-300">
-              <input
-                type="checkbox"
-                checked={acceptedTerms}
-                onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="accent-pink-500"
-              />
-              I accept the terms and conditions
-            </label>
-
-            <div className="flex justify-between gap-4">
-              {/* Cancel */}
-              <button
-                onClick={() => setShowBuyNowModal(false)}
-                className="px-4 py-2 font-bold text-gray-200 bg-gray-700 rounded hover:bg-gray-600"
-              >
-                Cancel
-              </button>
-
-              {/* UPI Button */}
-              <a
-                href="upi://pay?pa=7006144120@ptyes&pn=YourName&am=3500&cu=INR"
-                onClick={(e) => {
-                  if (!acceptedTerms) {
-                    e.preventDefault();
-                    alert("You must accept the terms and conditions first.");
-                  }
-                }}
-                className="px-4 py-2 font-bold text-white rounded bg-green-500 hover:bg-green-600
-                           hover:drop-shadow-[0_0_8px_rgba(0,255,128,0.8)]"
-              >
-                Pay with UPI
-              </a>
-            </div>
-          </div>
         </div>
       )}
     </div>
