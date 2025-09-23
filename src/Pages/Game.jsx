@@ -225,7 +225,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
               {/* Original text */}
               <span className="inline group-hover:hidden">
                 You are about to buy <strong>{game.name}</strong> for{" "}
-                <strong>₹70</strong>.
+                <strong>₹3500</strong>.
               </span>
               {/* Hover text */}
               <span className="hidden group-hover:inline">
