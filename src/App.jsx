@@ -37,7 +37,7 @@ const App = () => {
                 }
               />
               <Route
-                path="/game/:id"
+                path="/:slug"
                 element={
                   <MainLayout>
                     <Game

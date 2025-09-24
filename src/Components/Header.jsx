@@ -58,7 +58,10 @@ const Header = ({ onToggleGenre, onSearch }) => {
   return (
     <div className="flex flex-col z-50 bg-white dark:bg-[#121212] sticky top-0">
       <div className="flex flex-row items-center p-3">
-        <a href={window.location.origin} className="w-[60px]">
+        <a
+          href={window.location.origin}
+          className="w-[60px] relative block glitch-logo before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:opacity-70 before:mix-blend-screen after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-full after:opacity-70 after:mix-blend-screen"
+        >
           <img
             src={logo}
             alt="logo"
@@ -114,7 +117,7 @@ const Header = ({ onToggleGenre, onSearch }) => {
         <div className="flex items-center gap-4">
           {theme === "light" ? (
             <HiSun
-              className="bg-slate-200 text-[35px] text-black p-1 rounded-full cursor-pointer"
+              className="bg-slate-200 text-[35px] text-[#FFBF00] p-1 rounded-full cursor-pointer transition duration-300 hover:drop-shadow-[0_0_8px_#FFBF00] hover:animate-pulse-glow sun"
               onClick={() => {
                 setTheme("dark");
                 localStorage.setItem("theme", "dark");
@@ -122,7 +125,7 @@ const Header = ({ onToggleGenre, onSearch }) => {
             />
           ) : (
             <HiMoon
-              className="bg-slate-200 text-[35px] text-black p-1 rounded-full cursor-pointer"
+              className="bg-slate-700 text-[35px] text-white p-1 rounded-full cursor-pointer transition duration-300 hover:drop-shadow-[0_0_8px_#ffffff] hover:animate-pulse-glow-white moon"
               onClick={() => {
                 setTheme("light");
                 localStorage.setItem("theme", "light");

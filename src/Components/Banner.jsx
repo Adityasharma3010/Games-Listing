@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 const Banner = ({ gameBanner }) => {
   useEffect(() => {}, []);
   return (
-    <Link to={`/game/${gameBanner.id}`}>
+    <Link to={`/${gameBanner.slug}`}>
       <div className="relative cursor-pointer">
         <div className="absolute bottom-0 w-full p-5 bg-gradient-to-t from-slate-900 to-transparent rounded-b-xl">
           <h2 className="text-2xl font-bold audiowide text-white">

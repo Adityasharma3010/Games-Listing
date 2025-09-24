@@ -104,7 +104,7 @@ const GamesByGenreId = ({
           const isLast = index === gameList.length - 1;
           return (
             <Link
-              to={`/game/${item.id}`}
+              to={`/${item.slug}`} // ✅ use slug here
               key={item.id}
               ref={enableInfiniteScroll && isLast ? lastGameRef : null}
               className="bg-[#76a8f75e] p-3 gap-1 flex flex-col rounded-lg hover:scale-110 transition-all duration-300 cursor-pointer"
@@ -145,10 +145,13 @@ const GamesByGenreId = ({
                         ].includes(slug);
                         return (
                           storeData && (
-                            <span
+                            <button
                               key={store.store.id}
                               href={storeData.url}
                               target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()} // ✅ prevent outer Link click
+                              className="z-20"
                             >
                               <img
                                 src={storeData.icon}
@@ -160,7 +163,7 @@ const GamesByGenreId = ({
                                     : "dark:invert dark:brightness-105"
                                 }`}
                               />
-                            </span>
+                            </button>
                           )
                         );
                       })}

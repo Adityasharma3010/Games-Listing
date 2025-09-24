@@ -23,8 +23,11 @@ const TrendingGames = ({
         </div>
       );
     }
+
     return (
-      <Link to={`/game/${item.id}`} key={item.id}>
+      <Link to={`/${item.slug}`} key={item.id}>
+        {" "}
+        {/* ✅ use slug */}
         <div className="bg-[#76a8f75e] rounded-lg group hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer mt-5 w-full">
           <img
             src={item.background_image}

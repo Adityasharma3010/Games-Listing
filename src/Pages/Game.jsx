@@ -1,33 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import GlobalApi from "../Services/GlobalApi";
 import GamesByGenreId from "../Components/GamesByGenreId";
 
 const Game = ({ searchQuery, setSearchQuery }) => {
-  const { id } = useParams();
+  const { slug } = useParams(); // now we use slug
+  const [gameId, setGameId] = useState(null); // store actual ID
   const [searchResult, setSearchResult] = useState([]);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
   const [isMd, setIsMd] = useState(window.innerWidth >= 768);
   const [showBuyNowModal, setShowBuyNowModal] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
+  const popoverRef = useRef(null);
 
-  // Track window resize for responsive tag count
   useEffect(() => {
     const handleResize = () => setIsMd(window.innerWidth >= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Handle search query
+  // Fetch ID from slug
+  useEffect(() => {
+    if (!slug) return;
+    GlobalApi.searchGames(slug).then((res) => {
+      const filtered = res.data.results.filter((g) => g.slug === slug);
+      if (filtered.length > 0) setGameId(filtered[0].id);
+    });
+  }, [slug]);
+
   useEffect(() => {
     if (!searchQuery) {
       setSearchResult([]);
       setIsLoadingSearch(false);
       return;
     }
-
     setSearchResult([]);
     setIsLoadingSearch(true);
 
@@ -43,15 +52,24 @@ const Game = ({ searchQuery, setSearchQuery }) => {
     });
   }, [searchQuery]);
 
-  // Normal game fetch
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setShowPopover(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const { data: game, isLoading: isLoadingGame } = useQuery({
-    queryKey: ["gameDetails", id],
-    queryFn: () => GlobalApi.getGameDetails(id).then((res) => res.data),
-    enabled: !!id,
+    queryKey: ["gameDetails", gameId],
+    queryFn: () =>
+      gameId ? GlobalApi.getGameDetails(gameId).then((res) => res.data) : null,
+    enabled: !!gameId,
     staleTime: 1000 * 60 * 5,
   });
 
-  // 🔹 Render search results if searchQuery exists
   if (searchQuery) {
     return isLoadingSearch ? (
       <div className="flex items-center justify-center h-40">
@@ -69,7 +87,6 @@ const Game = ({ searchQuery, setSearchQuery }) => {
     );
   }
 
-  // Render single game page
   if (isLoadingGame)
     return (
       <div className="flex items-center justify-center h-40">
@@ -77,9 +94,13 @@ const Game = ({ searchQuery, setSearchQuery }) => {
       </div>
     );
 
-  if (!game) return <div>Game not found.</div>;
+  if (!game)
+    return (
+      <div className="press text-3xl text-center m-auto bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 dark:from-cyan-400 dark:via-fuchsia-500 dark:to-purple-600 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient flicker fixed inset-2/4 h-fit w-3xs">
+        Game not found.
+      </div>
+    );
 
-  // Responsive tag logic
   const visibleTagCount = showAllTags ? game.tags.length : isMd ? 5 : 2;
   const visibleTags = game.tags?.slice(0, visibleTagCount) || [];
   const hiddenCount = game.tags?.length - visibleTagCount || 0;
@@ -176,8 +197,8 @@ const Game = ({ searchQuery, setSearchQuery }) => {
               "epic-games": "https://www.epicgames.com/store/",
               gog: "https://www.gog.com/",
               "playstation-store": "https://store.playstation.com/",
-              "xbox-store": "https://www.xbox.com/en-US/games/store",
-              xbox360: "https://www.xbox.com/en-US/games/store",
+              "xbox-store": "https://www.xbox.com/microsoft-store",
+              xbox360: "https://www.xbox.com/microsoft-store",
               nintendo: "https://www.nintendo.com/store/",
               "apple-appstore": "https://www.apple.com/app-store/",
               "google-play": "https://play.google.com/",
@@ -207,8 +228,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
       <div className="flex justify-center mt-6">
         <button
           onClick={() => setShowBuyNowModal(true)}
-          className="px-6 py-3 text-lg font-bold text-white transition bg-pink-500 rounded-lg hover:bg-pink-600 
-               hover:drop-shadow-[0_0_10px_rgba(255,0,255,0.7)] dark:hover:drop-shadow-[0_0_10px_rgba(255,20,147,0.8)]"
+          className="relative px-6 py-3 text-lg font-bold text-white bg-pink-500 rounded-lg transition-all duration-300 hover:bg-pink-600 hover:drop-shadow-[0_0_10px_rgba(255,0,255,0.7)] dark:hover:drop-shadow-[0_0_10px_rgba(255,20,147,0.8)] overflow-hidden before:absolute before:top-0 before:left-0 before:w-full before:h-full before:content-[''] before:opacity-70 before:mix-blend-screen after:absolute after:top-0 after:left-0 after:w-full after:h-full after:content-[''] after:opacity-70 after:mix-blend-screen hover:before:animate-[glitch-top_0.3s_infinite_linear_alternate-reverse] hover:after:animate-[glitch-bottom_0.3s_infinite_linear_alternate-reverse] buy-btn"
         >
           Buy Now
         </button>
@@ -217,19 +237,14 @@ const Game = ({ searchQuery, setSearchQuery }) => {
       {/* Buy Now Modal */}
       {showBuyNowModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="relative w-11/12 max-w-md p-6 bg-gray-900 border-2 border-pink-500 rounded-lg animate-neon-glow">
+          <div className="flex flex-col gap-0 items-start relative w-11/12 max-w-lg p-6 bg-gray-900 border-2 border-pink-500 rounded-lg animate-neon-glow">
             <h2 className="mb-4 text-2xl font-bold text-pink-500 flicker">
               Confirm Purchase
             </h2>
-            <p className="mb-4 text-sm text-gray-300 cursor-pointer group">
-              {/* Original text */}
-              <span className="inline group-hover:hidden">
+            <p className="mb-4 text-sm text-gray-300 cursor-default">
+              <span className="inline">
                 You are about to buy <strong>{game.name}</strong> for{" "}
                 <strong>₹3500</strong>.
-              </span>
-              {/* Hover text */}
-              <span className="hidden group-hover:inline">
-                You will not get any game key!
               </span>
             </p>
 
@@ -241,10 +256,23 @@ const Game = ({ searchQuery, setSearchQuery }) => {
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
                 className="accent-pink-500"
               />
-              I accept the terms and conditions
+              I accept the{" "}
+              <span
+                className="underline decoration-2 decoration-dotted underline-offset-2 cursor-pointer relative"
+                onClick={() => setShowPopover((prev) => !prev)}
+                ref={popoverRef} // attach ref here
+              >
+                <strong>terms and conditions</strong>
+                {/* Popover */}
+                {showPopover && (
+                  <div className="absolute z-10 mt-2 w-fit p-2.5 text-sm text-white bg-gray-800 rounded-lg shadow-lg">
+                    You will not get any game key!
+                  </div>
+                )}
+              </span>
             </label>
 
-            <div className="flex justify-between gap-4">
+            <div className="flex self-stretch justify-between gap-4">
               {/* Cancel */}
               <button
                 onClick={() => setShowBuyNowModal(false)}
