@@ -374,6 +374,58 @@
   }
 }
 
+/* Light mode gaming selection */
+::selection {
+  color: #ffffff;
+  background-color: #ff007f; /* fallback color */
+  background-image: linear-gradient(
+    270deg,
+    #ff007f,
+    #ffae00,
+    #00c3ff,
+    #7fff00,
+    #ff00ff
+  );
+  background-size: 600% 600%;
+  animation: selectionGradient 8s ease infinite;
+}
+
+/* Dark mode gaming selection */
+.dark ::selection {
+  color: #121212;
+  background-color: #00fff7;
+  background-image: linear-gradient(
+    270deg,
+    #00fff7,
+    #ff007f,
+    #8a2be2,
+    #ff3300,
+    #00ff73
+  );
+  background-size: 600% 600%;
+  animation: selectionGradient 8s ease infinite;
+}
+
+/* Gradient animation keyframes */
+@keyframes selectionGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.no-select {
+  -webkit-user-select: none; /* Chrome, Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+ */
+  user-select: none; /* Standard */
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

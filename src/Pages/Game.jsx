@@ -237,7 +237,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
       {/* Buy Now Modal */}
       {showBuyNowModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="flex flex-col gap-0 items-start relative w-11/12 max-w-lg p-6 bg-gray-900 border-2 border-pink-500 rounded-lg animate-neon-glow">
+          <div className="flex flex-col gap-0 items-start relative w-11/12 max-w-lg p-6 bg-gray-900 border-2 border-pink-500 rounded-lg animate-neon-glow no-select">
             <h2 className="mb-4 text-2xl font-bold text-pink-500 flicker">
               Confirm Purchase
             </h2>
