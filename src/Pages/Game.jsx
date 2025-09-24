@@ -96,7 +96,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
 
   if (!game)
     return (
-      <div className="press text-3xl text-center m-auto bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 dark:from-cyan-400 dark:via-fuchsia-500 dark:to-purple-600 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient flicker fixed inset-2/4 h-fit w-3xs">
+      <div className="press text-3xl text-center m-auto bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 dark:from-cyan-400 dark:via-fuchsia-500 dark:to-purple-600 bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient flicker fixed inset-2/4 h-fit w-3xs !left-1/2 md:left-[unset] !-translate-x-1/2 md:!-translate-x-0 md:max-w-[450px] md:w-full">
         Game not found.
       </div>
     );
@@ -249,23 +249,23 @@ const Game = ({ searchQuery, setSearchQuery }) => {
             </p>
 
             {/* Terms Checkbox */}
-            <label className="flex items-center gap-2 mb-4 text-gray-300">
+            <label className="inline items-center gap-2 mb-4 text-gray-300">
               <input
                 type="checkbox"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="accent-pink-500"
+                className="accent-pink-500 mr-2"
               />
               I accept the{" "}
               <span
-                className="underline decoration-2 decoration-dotted underline-offset-2 cursor-pointer relative"
+                className="underline decoration-2 decoration-dotted underline-offset-2 cursor-pointer sm:relative self-stretch"
                 onClick={() => setShowPopover((prev) => !prev)}
                 ref={popoverRef} // attach ref here
               >
                 <strong>terms and conditions</strong>
                 {/* Popover */}
                 {showPopover && (
-                  <div className="absolute z-10 mt-2 w-fit p-2.5 text-sm text-white bg-gray-800 rounded-lg shadow-lg">
+                  <div className="absolute left-1/2 -translate-x-1/2 sm:left-0 sm:-translate-x-0 z-10 mt-2 w-[220px] p-2.5 text-sm text-white bg-gray-800 rounded-lg shadow-lg">
                     You will not get any game key!
                   </div>
                 )}
@@ -276,7 +276,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
               {/* Cancel */}
               <button
                 onClick={() => setShowBuyNowModal(false)}
-                className="px-4 py-2 font-bold text-gray-200 bg-gray-700 rounded hover:bg-gray-600"
+                className="px-4 py-2 font-bold text-gray-200 bg-gray-700 rounded text-center hover:bg-gray-600"
               >
                 Cancel
               </button>
@@ -295,7 +295,7 @@ const Game = ({ searchQuery, setSearchQuery }) => {
                     );
                   }
                 }}
-                className="px-4 py-2 font-bold text-white rounded bg-green-500 hover:bg-green-600
+                className="px-4 py-2 font-bold text-white rounded text-center bg-green-500 hover:bg-green-600
              hover:drop-shadow-[0_0_8px_rgba(0,255,128,0.8)]"
               >
                 Pay with UPI
